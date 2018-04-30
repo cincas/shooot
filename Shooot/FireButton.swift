@@ -22,17 +22,18 @@ class FireButton: SKSpriteNode {
     prepareChildNodes()
   }
   
+  private var backgroundNode: SKShapeNode?
+  private var titleNode: SKLabelNode?
+  
   func prepareChildNodes() {
     let width: CGFloat = 120.0
     let titleNode = SKLabelNode(text: "Fire")
     titleNode.fontSize = 32
-    titleNode.color = UIColor.white
     titleNode.fontName = "Helvetica Neue"
     titleNode.zPosition = 2
     
     let backgroundNode = SKShapeNode(circleOfRadius: width / 2)
-    backgroundNode.fillColor = UIColor.red
-    backgroundNode.strokeColor = UIColor.blue
+    backgroundNode.strokeColor = .blue
     backgroundNode.lineWidth = 2.0
     backgroundNode.zPosition = 1
     addChild(titleNode)
@@ -45,16 +46,26 @@ class FireButton: SKSpriteNode {
     
     self.size = CGSize(width: width, height: width)
     isUserInteractionEnabled = true
+    self.backgroundNode = backgroundNode
+    self.titleNode = titleNode
+    color = .clear
+    isFiring = false
   }
   
-  var isFiring = false
-  var firingTimer: Timer?
+  private var isFiring = false {
+    didSet {
+      backgroundNode?.fillColor = isFiring ? .red : .green
+      titleNode?.fontColor = isFiring ? .white : .black
+    }
+  }
   
+  private var firingTimer: Timer?
+  private var fireRate: TimeInterval = 0.2
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     isFiring = true
     firingTimer?.invalidate()
     
-    let timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [onClick, weak self](_) in
+    let timer = Timer.scheduledTimer(withTimeInterval: fireRate, repeats: true) { [onClick, weak self](_) in
       guard let sself = self else { return; }
       onClick?(sself)
     }
@@ -65,6 +76,7 @@ class FireButton: SKSpriteNode {
   override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     isFiring = false
     firingTimer?.invalidate()
+    (scene as? GameScene)?.touchesEnded(touches, with: event)
   }
   
   override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {

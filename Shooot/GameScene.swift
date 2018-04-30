@@ -13,17 +13,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   var gunNode: GunNode?
   var fireButton: FireButton?
   var totalScore: Double = 0.0
-  var scoreLabel: SKLabelNode?
+  var scoreBoard: ScoreBoard?
   
   override func didMove(to view: SKView) {
     super.didMove(to: view)
     physicsWorld.gravity = CGVector(dx: 0, dy: 0)
     physicsWorld.contactDelegate = self
-    scaleMode = .aspectFill
-    
+    scaleMode = .aspectFit
+    backgroundColor = .gray
     if let gunNode = childNode(withName: "Gun") as? GunNode {
       self.gunNode = gunNode
-      gunNode.color = UIColor.green
+      gunNode.color = .clear
+      gunNode.prepare()
     }
     
     if let fireButton = childNode(withName: "FireButton") as? FireButton {
@@ -31,31 +32,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
       fireButton.onClick = { [weak self] (sender: FireButton) in self?.fire() }
     }
     
+    if let scoreBoard = childNode(withName: "ScoreBoard") as? ScoreBoard {
+      self.scoreBoard = scoreBoard
+      scoreBoard.prepare()
+    }
+    
     prepareTargets()
-    prepareBoard()
   }
-  
-  func prepareBoard() {
-    let board = SKSpriteNode(color: .blue, size: CGSize(width: 200, height: 100))
-    addChild(board)
-    var position = fireButton?.position ?? CGPoint.zero
-    
-    position.y += 150.0
-    position.x -= 50
-    board.position = position
-    
-    let scoreLabel = SKLabelNode(text: "Score: \(totalScore)")
-    board.addChild(scoreLabel)
-    self.scoreLabel = scoreLabel
-  }
-  
+
   func gained(score: Double) {
     totalScore += score
-    scoreLabel?.text = "Score: \(totalScore)"
+    scoreBoard?.updateScore(to: totalScore)
   }
   
   func prepareTargets() {
-    let originPoint = CGPoint(x: -frame.width/2, y: frame.height/2)
+    let originPoint = CGPoint(x: 0, y: frame.height)
     var lastPoint = originPoint
     let numberOfTargets = 10
     let targets: [TargetNode] = (0..<numberOfTargets).map { index in
@@ -78,12 +69,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     moveGun(toPosition: position, previousPosition: previousPosition)
   }
   
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    gunNode?.stopMoving()
+  }
+  
   func moveGun(toPosition position: CGPoint, previousPosition: CGPoint) {
     guard let gunNode = gunNode else { return }
     guard abs(position.x - previousPosition.x) > 5 else { return }
 
-    let newX = gunNode.position.x + (position.x - previousPosition.x)
+    let newX = gunNode.position.x + (position.x - previousPosition.x) * 1.1
     gunNode.position.x = xBoundrayOf(newX)
+    switch position.x > previousPosition.x {
+    case true:
+      gunNode.movingRight()
+    case false:
+      gunNode.movingLeft()
+    }
   }
 }
 

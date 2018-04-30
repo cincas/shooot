@@ -19,6 +19,7 @@
 		F637FA82209596E100908AAD /* FireButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F637FA81209596E100908AAD /* FireButton.swift */; };
 		F637FA842095A13900908AAD /* GunNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F637FA832095A13900908AAD /* GunNode.swift */; };
 		F637FA862095A54500908AAD /* TargetNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F637FA852095A54500908AAD /* TargetNode.swift */; };
+		F669AE262096EFCC00529583 /* ScoreBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F669AE252096EFCC00529583 /* ScoreBoard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		F637FA81209596E100908AAD /* FireButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireButton.swift; sourceTree = "<group>"; };
 		F637FA832095A13900908AAD /* GunNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GunNode.swift; sourceTree = "<group>"; };
 		F637FA852095A54500908AAD /* TargetNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetNode.swift; sourceTree = "<group>"; };
+		F669AE252096EFCC00529583 /* ScoreBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				F637FA81209596E100908AAD /* FireButton.swift */,
 				F637FA832095A13900908AAD /* GunNode.swift */,
 				F637FA852095A54500908AAD /* TargetNode.swift */,
+				F669AE252096EFCC00529583 /* ScoreBoard.swift */,
 			);
 			path = Shooot;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 				F637FA82209596E100908AAD /* FireButton.swift in Sources */,
 				F637FA842095A13900908AAD /* GunNode.swift in Sources */,
 				F637FA60209589B200908AAD /* GameViewController.swift in Sources */,
+				F669AE262096EFCC00529583 /* ScoreBoard.swift in Sources */,
 				F637FA862095A54500908AAD /* TargetNode.swift in Sources */,
 				F637FA58209589B200908AAD /* AppDelegate.swift in Sources */,
 			);
