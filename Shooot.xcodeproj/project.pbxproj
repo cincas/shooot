@@ -16,6 +16,9 @@
 		F637FA65209589B300908AAD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F637FA64209589B300908AAD /* Assets.xcassets */; };
 		F637FA68209589B300908AAD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F637FA66209589B300908AAD /* LaunchScreen.storyboard */; };
 		F637FA73209589B300908AAD /* ShoootTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F637FA72209589B300908AAD /* ShoootTests.swift */; };
+		F637FA82209596E100908AAD /* FireButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F637FA81209596E100908AAD /* FireButton.swift */; };
+		F637FA842095A13900908AAD /* GunNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F637FA832095A13900908AAD /* GunNode.swift */; };
+		F637FA862095A54500908AAD /* TargetNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F637FA852095A54500908AAD /* TargetNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +45,9 @@
 		F637FA6E209589B300908AAD /* ShoootTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoootTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F637FA72209589B300908AAD /* ShoootTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoootTests.swift; sourceTree = "<group>"; };
 		F637FA74209589B300908AAD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F637FA81209596E100908AAD /* FireButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireButton.swift; sourceTree = "<group>"; };
+		F637FA832095A13900908AAD /* GunNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GunNode.swift; sourceTree = "<group>"; };
+		F637FA852095A54500908AAD /* TargetNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +98,9 @@
 				F637FA64209589B300908AAD /* Assets.xcassets */,
 				F637FA66209589B300908AAD /* LaunchScreen.storyboard */,
 				F637FA69209589B300908AAD /* Info.plist */,
+				F637FA81209596E100908AAD /* FireButton.swift */,
+				F637FA832095A13900908AAD /* GunNode.swift */,
+				F637FA852095A54500908AAD /* TargetNode.swift */,
 			);
 			path = Shooot;
 			sourceTree = "<group>";
@@ -209,7 +218,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F637FA5E209589B200908AAD /* GameScene.swift in Sources */,
+				F637FA82209596E100908AAD /* FireButton.swift in Sources */,
+				F637FA842095A13900908AAD /* GunNode.swift in Sources */,
 				F637FA60209589B200908AAD /* GameViewController.swift in Sources */,
+				F637FA862095A54500908AAD /* TargetNode.swift in Sources */,
 				F637FA58209589B200908AAD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -377,7 +389,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.cincas.Shooot;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cincas.shooot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -395,7 +407,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.cincas.Shooot;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cincas.shooot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

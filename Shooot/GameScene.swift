@@ -9,81 +9,119 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
+  var gunNode: GunNode?
+  var fireButton: FireButton?
+  var totalScore: Double = 0.0
+  var scoreLabel: SKLabelNode?
+  
+  override func didMove(to view: SKView) {
+    super.didMove(to: view)
+    physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+    physicsWorld.contactDelegate = self
+    scaleMode = .aspectFill
     
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
-    
-    override func didMove(to view: SKView) {
-        
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
-        
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-        
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
+    if let gunNode = childNode(withName: "Gun") as? GunNode {
+      self.gunNode = gunNode
+      gunNode.color = UIColor.green
     }
     
-    
-    func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
+    if let fireButton = childNode(withName: "FireButton") as? FireButton {
+      self.fireButton = fireButton
+      fireButton.onClick = { [weak self] (sender: FireButton) in self?.fire() }
     }
     
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
+    prepareTargets()
+    prepareBoard()
+  }
+  
+  func prepareBoard() {
+    let board = SKSpriteNode(color: .blue, size: CGSize(width: 200, height: 100))
+    addChild(board)
+    var position = fireButton?.position ?? CGPoint.zero
+    
+    position.y += 150.0
+    position.x -= 50
+    board.position = position
+    
+    let scoreLabel = SKLabelNode(text: "Score: \(totalScore)")
+    board.addChild(scoreLabel)
+    self.scoreLabel = scoreLabel
+  }
+  
+  func gained(score: Double) {
+    totalScore += score
+    scoreLabel?.text = "Score: \(totalScore)"
+  }
+  
+  func prepareTargets() {
+    let originPoint = CGPoint(x: -frame.width/2, y: frame.height/2)
+    var lastPoint = originPoint
+    let numberOfTargets = 10
+    let targets: [TargetNode] = (0..<numberOfTargets).map { index in
+      let point = CGPoint(x: lastPoint.x, y: lastPoint.y - 40)
+      let target = TargetNode.makeTarget(position: point)
+      addChild(target)
+      target.zPosition = 1
+      target.score = Double(numberOfTargets - index).rounded()
+      lastPoint = point
+      return target
     }
     
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
-    }
+    targets.forEach { $0.startMoving() }
+  }
+  
+  override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    guard let touch = touches.first else { return }
+    let previousPosition = touch.previousLocation(in: self)
+    let position = touch.location(in: self)
+    moveGun(toPosition: position, previousPosition: previousPosition)
+  }
+  
+  func moveGun(toPosition position: CGPoint, previousPosition: CGPoint) {
+    guard let gunNode = gunNode else { return }
+    guard abs(position.x - previousPosition.x) > 5 else { return }
+
+    let newX = gunNode.position.x + (position.x - previousPosition.x)
+    gunNode.position.x = xBoundrayOf(newX)
+  }
+}
+
+extension GameScene {
+  func xBoundrayOf(_ x: CGFloat) -> CGFloat {
+    let minX = frame.minX
+    let maxX = frame.maxX
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-        }
-        
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
-    }
+    guard let gunNode = self.gunNode else { return 0 }
+    let halfWidth = gunNode.size.width / 2
+    let allowedMinX = minX + halfWidth
+    let allowedMaxX = maxX - halfWidth
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+    switch x {
+    case ..<allowedMinX:
+      return allowedMinX
+    case allowedMaxX...CGFloat.infinity:
+      return allowedMaxX
+    default:
+      return x
     }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+  }
+}
+
+extension GameScene {
+  func fire() {
+    gunNode?.fire(inScene: self)
+  }
+}
+
+extension GameScene {
+  func didBegin(_ contact: SKPhysicsContact) {
+    let targetNode = [contact.bodyA.node, contact.bodyB.node].first { $0 is TargetNode } as? TargetNode
+    targetNode?.hitted()
+    if let score = targetNode?.score {
+      gained(score: score)
     }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-    }
-    
-    
-    override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
-    }
+    let bulletNode = [contact.bodyA.node, contact.bodyB.node].first { $0 is Bullet } as? Bullet
+    bulletNode?.hitted()
+  }
 }
